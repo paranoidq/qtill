@@ -8,16 +8,18 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Logger;
 
 /**
  * @author paranoidq
  * @since 1.0.0
  */
+
 public class HeartbeatHandler extends ChannelDuplexHandler {
-    private static final Logger logger = Logger.getLogger(HeartbeatHandler.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(HeartbeatHandler.class);
 
     // TODO: Netty中同一个handler只会被一个线程调用，不存在竞争问题
     private final AtomicInteger heartbeatLossCounter = new AtomicInteger(0);
@@ -52,15 +54,15 @@ public class HeartbeatHandler extends ChannelDuplexHandler {
             } else if (enableHeartbeatCheck && e.state() == IdleState.READER_IDLE) {
                 // read idle
                 int loss = heartbeatLossCounter.incrementAndGet();
-                logger.warning("*** Read idle, loss peer heartbeat [" + loss + "] times");
+                logger.warn("*** Read idle, loss peer heartbeat [" + loss + "] times");
 
                 // 超过一定次数之后，主动关闭链路
                 if (heartBeatCheckTolerance > 0 && loss >= heartBeatCheckTolerance) {
                     ChannelFuture closeFuture = ctx.channel().close().sync();
                     if (closeFuture.isSuccess()) {
-                        logger.warning("*** Peer heartbeat loss more than [" + heartBeatCheckTolerance + "] times, close channel");
+                        logger.warn("*** Peer heartbeat loss more than [" + heartBeatCheckTolerance + "] times, close channel");
                     } else {
-                        logger.warning("*** Peer heartbeat loss more than [" + heartBeatCheckTolerance + "] times, but close channel failed");
+                        logger.warn("*** Peer heartbeat loss more than [" + heartBeatCheckTolerance + "] times, but close channel failed");
                     }
                 }
             }

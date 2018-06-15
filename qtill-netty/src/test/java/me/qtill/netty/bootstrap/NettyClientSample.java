@@ -2,9 +2,9 @@ package me.qtill.netty.bootstrap;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
-import me.qtill.netty.client.NettyClient;
+import me.qtill.netty.client.NettyPoolClient;
 import me.qtill.netty.client.NettyClientBootstrapBuilder;
-import me.qtill.netty.client.MsgSendCallback;
+import me.qtill.netty.client.SendCallback;
 
 /**
  * @author paranoidq
@@ -13,7 +13,7 @@ import me.qtill.netty.client.MsgSendCallback;
 public class NettyClientSample {
     public static void main(String[] args) throws Exception {
         Bootstrap bootstrap = NettyClientBootstrapBuilder.getInstance().build();
-        NettyClient client = NettyClient.newBuilder(bootstrap, "0.0.0.0", 16001)
+        NettyPoolClient client = NettyPoolClient.builder(bootstrap, "0.0.0.0", 16001)
             .enableHeartbeatSend(true)
             .heartBeatSendPeriodMillis(2000)
             .enableHeartbeatCheck(true)
@@ -22,11 +22,15 @@ public class NettyClientSample {
             .autoReconnectMaxTimes(2)
             .build();
 
-        client.start();
-        client.send("ab".getBytes(), new MsgSendCallback() {
+        client.send("ab".getBytes(), new SendCallback() {
             @Override
             public void onSuccess(ChannelFuture future) {
                 System.out.println("call back is invoked");
+            }
+
+            @Override
+            public void onFailed(ChannelFuture future) {
+
             }
         });
 

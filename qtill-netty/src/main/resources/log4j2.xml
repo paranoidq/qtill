@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO" monitorInterval="30">
+
+    <!-- 变量配置 -->
+    <Properties>
+        <!--日志目录-->
+        <Property name="baseLogPath">logs/</Property>
+        <!--daily日志名称-->
+        <Property name="dailyLogFileName">daily</Property>
+        <!--单文件日志名称-->
+        <Property name="logFileName">app.log</Property>
+        <Property name="layoutPattern">%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Property>
+
+
+        <Property name="logging.level.root">debug</Property>
+        <Property name="logging.level.app">debug</Property>
+        <Property name="logging.level.netty">debug</Property>
+
+    </Properties>
+
+    <!-- appender配置 -->
+    <Appenders>
+
+        <!--console控制台输出-->
+        <Console name="APPENDER_CONSOLE" target="SYSTEM_OUT">
+            <PatternLayout pattern="${layoutPattern}"/>
+        </Console>
+
+        <!--daily滚动日志-->
+        <RollingFile name="APPENDER_DAILY_ROLLING" fileName="${baseLogPath}/${dailyLogFileName}.log"
+                     filePattern="${baseLogPath}/${dailyLogFileName}-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${layoutPattern}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="5"/>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+
+        <!--单一文件日志-->
+        <File name="APPENDER_FILE" fileName="${logFileName}" bufferedIO="true">
+            <PatternLayout pattern="${layoutPattern}"/>
+        </File>
+    </Appenders>
+
+
+    <!--配置日志目标package-->
+    <Loggers>
+
+        <!--# Root日志配置 start-->
+        <Root level="${logging.level.root}">
+            <AppenderRef ref="APPENDER_CONSOLE" />
+        </Root>
+        <!--# Root日志配置 end-->
+
+
+        <!--# 应用日志配置 start-->
+        <!--## 应用全局配置-->
+        <Logger name="me.qtill" level="${logging.level.app}" additivity="false">
+            <!--<AppenderRef ref="APPENDER_DAILY_ROLLING" />-->
+            <AppenderRef ref="APPENDER_CONSOLE" />
+　　　　 </Logger>
+        <!--# 应用日志配置 end-->
+
+
+        <!--# netty日志配置 start-->
+        <Logger name="io.netty" level="${logging.level.netty}" additivity="false">
+            <!--<AppenderRef ref="APPENDER_DAILY_ROLLING" />-->
+            <AppenderRef ref="APPENDER_CONSOLE" />
+　　　　 </Logger>
+        <!--# netty日志配置 end-->
+
+
+
+    </Loggers>
+</Configuration>

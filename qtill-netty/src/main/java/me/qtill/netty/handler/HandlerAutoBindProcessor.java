@@ -17,6 +17,8 @@ import java.util.*;
  *
  * 绑定的顺序依赖于{@link HandlerAutoBind#indexAtChannel()}，值越小在ChannelPipeline中的位置越靠前
  *
+ * 目前只支持绑定具有默认构造函数的ChannelHandler实例
+ *
  * @author paranoidq
  * @since 1.0.0
  */

@@ -5,7 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
-import me.qtill.netty.bootstrap.NettyServerBootstrapBuilder;
+import me.qtill.netty.server.NettyServerBootstrapBuilder;
 
 /**
  * @author paranoidq

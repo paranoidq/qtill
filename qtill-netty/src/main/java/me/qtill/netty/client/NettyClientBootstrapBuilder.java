@@ -1,4 +1,4 @@
-package me.qtill.netty.bootstrap;
+package me.qtill.netty.client;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;

@@ -1,5 +1,5 @@
 
-package me.qtill.netty.bootstrap;
+package me.qtill.netty.server;
 
 
 import io.netty.bootstrap.Bootstrap;

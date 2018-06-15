@@ -1,4 +1,4 @@
-package me.qtill.netty.bootstrap;
+package me.qtill.netty.server;
 
 /**
  * @author paranoidq

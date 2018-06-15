@@ -29,6 +29,9 @@ public class HeartbeatHandler extends ChannelDuplexHandler {
     private ByteBuf heartbeatCheckToken = Unpooled.directBuffer().writeBytes(new byte[]{0x00, 0x00});
     private int heartBeatCheckTolerance = 3;
 
+    public HeartbeatHandler() {
+    }
+
     public HeartbeatHandler(boolean enableHeartbeatSend, boolean enableHeartbeatCheck, boolean normalMsgAsHeartbeat, ByteBuf heartbeatSendToken, ByteBuf heartbeatCheckToken, int heartBeatCheckTolerance) {
         this.enableHeartbeatSend = enableHeartbeatSend;
         this.enableHeartbeatCheck = enableHeartbeatCheck;

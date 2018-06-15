@@ -1,4 +1,4 @@
-package me.qtill.netty.util.msg;
+package me.qtill.netty.client;
 
 import io.netty.channel.ChannelFuture;
 
@@ -12,5 +12,6 @@ public abstract class MsgSendCallback {
     }
 
     public void onFailed(ChannelFuture future) {
+
     }
 }

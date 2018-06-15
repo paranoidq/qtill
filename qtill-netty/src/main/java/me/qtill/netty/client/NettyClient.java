@@ -1,16 +1,17 @@
-package me.qtill.netty.bootstrap;
+package me.qtill.netty.client;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
-import me.qtill.netty.util.connection.ConnectCommand;
+import me.qtill.netty.handler.HandlerAutoBindProcessor;
 import me.qtill.netty.util.connection.AutoReconnectionHandler;
-import me.qtill.netty.util.heartbeat.HeartbeatHandler;
-import me.qtill.netty.util.msg.MsgSendCallback;
+import me.qtill.netty.util.connection.ConnectCommand;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -49,6 +50,10 @@ public class NettyClient {
     private int autoResendMaxTime = 3;
 
     private SocketChannel channel;
+
+
+    private HandlerAutoBindProcessor handlerAutoBindProcessor;
+
 
     private NettyClient(Bootstrap bootstrap, String remoteIp, int remotePort) {
         this.bootstrap = bootstrap;
@@ -128,7 +133,13 @@ public class NettyClient {
             return this;
         }
 
+        public NettyClientBuilder handlerAutoBindProcessor(HandlerAutoBindProcessor processor) {
+            client.handlerAutoBindProcessor = processor;
+            return this;
+        }
+
         public NettyClient build() {
+
             client.bootstrap.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 protected void initChannel(SocketChannel ch) throws Exception {
@@ -147,14 +158,10 @@ public class NettyClient {
                     // 增加心跳包handler
                     ch.pipeline().addLast(new IdleStateHandler(client.heartBeatCheckPeriod, client.heartBeatSendPeriod, Math.max(
                         client.heartBeatCheckPeriod, client.heartBeatSendPeriod), TimeUnit.MILLISECONDS));
-                    ch.pipeline().addLast(new HeartbeatHandler(
-                        client.enableHeartbeatSend,
-                        client.enableHeartbeatCheck,
-                        client.normalMsgAsHeartbeat,
-                        client.heartbeatSendToken,
-                        client.heartbeatCheckToken,
-                        client.heartBeatCheckTolerance
-                    ));
+
+                    if (client.handlerAutoBindProcessor != null) {
+                        client.handlerAutoBindProcessor.autoBind(ch.pipeline());
+                    }
                 }
             });
 

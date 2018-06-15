@@ -1,10 +1,10 @@
 package me.qtill.netty.handler;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.ChannelFuture;
-import me.qtill.netty.client.SendCallback;
 import me.qtill.netty.client.NettyPoolClient;
 import me.qtill.netty.client.NettyClientBootstrapBuilder;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author paranoidq
@@ -12,7 +12,7 @@ import me.qtill.netty.client.NettyClientBootstrapBuilder;
  */
 public class HandlerAutoBindProcessorTest {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(java.lang.String[] args) throws Exception {
         Bootstrap bootstrap = NettyClientBootstrapBuilder.getInstance().build();
         NettyPoolClient client = NettyPoolClient.builder(bootstrap, "0.0.0.0", 16001)
             .enableHeartbeatSend(true)
@@ -21,20 +21,26 @@ public class HandlerAutoBindProcessorTest {
             .heartBeatCheckPeriodMillis(2000)
             .enableAutoReconnect(true)
             .autoReconnectMaxTimes(2)
-            .handlerAutoBindProcessor(new HandlerAutoBindProcessor("me.qtill.netty.test"))
+            .handlerAutoBindProcessor(new String("me.qtill.netty.test"))
+            .keptConnections(3)
             .build();
 
-        client.send("ab".getBytes(), new SendCallback() {
-            @Override
-            public void onSuccess(ChannelFuture future) {
-                System.out.println("call back is invoked");
-            }
+        client.start();
 
-            @Override
-            public void onFailed(ChannelFuture future) {
 
-            }
-        });
+        TimeUnit.SECONDS.sleep(1001223);
+
+//        client.send("ab".getBytes(), new SendCallback() {
+//            @Override
+//            public void onSuccess(ChannelFuture future) {
+//                System.out.println("call back is invoked");
+//            }
+//
+//            @Override
+//            public void onFailed(ChannelFuture future) {
+//
+//            }
+//        });
 
     }
 }

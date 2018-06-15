@@ -2,9 +2,10 @@ package me.qtill.netty.util.connection;
 
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Logger;
 
 /**
  * 管理连接事件
@@ -13,7 +14,7 @@ import java.util.logging.Logger;
  * @since 1.0.0
  */
 public class AutoReconnectionHandler extends ChannelDuplexHandler {
-    private static final Logger logger = Logger.getLogger(AutoReconnectionHandler.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(AutoReconnectionHandler.class);
 
     private boolean autoReconnect = false;
     private int autoReconnectMaxTimes = 3;
@@ -41,17 +42,17 @@ public class AutoReconnectionHandler extends ChannelDuplexHandler {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        logger.warning("*** Connection inactive");
+        logger.warn("*** Connection inactive");
         if (autoReconnect) {
             if (autoReconnectCurrentTimes.incrementAndGet() < autoReconnectMaxTimes) {
-                logger.warning("*** Try connecting [" + autoReconnectCurrentTimes.get() +"] ...");
+                logger.warn("*** Try connecting [" + autoReconnectCurrentTimes.get() +"] ...");
                 try {
                     connectCommand.call();
                 } catch (Throwable throwable) {
-                    logger.warning("*** Try connecting failed. Cause: [" + throwable.toString() + "]");
+                    logger.warn("*** Try connecting failed. Cause: [" + throwable.toString() + "]");
                 }
             } else {
-                logger.warning("*** Try connect more than [" + autoReconnectMaxTimes + "] times. Stop trying");
+                logger.warn("*** Try connect more than [" + autoReconnectMaxTimes + "] times. Stop trying");
             }
         }
         ctx.fireChannelInactive();

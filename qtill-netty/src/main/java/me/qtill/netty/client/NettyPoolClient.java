@@ -26,7 +26,9 @@ import org.slf4j.LoggerFactory;
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -114,7 +116,7 @@ public class NettyPoolClient {
 
 
     /**
-     * 启动函数
+     * 启动Netty客户端
      */
     public void start() {
         if (keptConnections > 1) {
@@ -151,6 +153,60 @@ public class NettyPoolClient {
             }
             logger.info("*** NettyPoolClient started success");
         }
+    }
+
+    /**
+     * 停止Netty客户端
+     */
+    public void stop() {
+        if (channelPool != null) {
+            channelPool.close();
+            channelPool = null;
+        }
+    }
+
+
+    /**
+     * 获取链路
+     * 该函数为同步调用，无限等待获取到channel，除非发生异常情况
+     * @return
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    public Channel acquireChannel() throws ExecutionException, InterruptedException {
+        Preconditions.checkState(channelPool != null, "ChannelPool is null");
+        return channelPool.acquire().get();
+    }
+
+    /**
+     * 获取链路
+     * 该函数为同步调用，除非超过了规定的超时时间或发生异常
+     * @param timeout
+     * @param unit
+     * @return
+     * @throws InterruptedException
+     * @throws TimeoutException
+     * @throws ExecutionException
+     */
+    public Channel acquireChannel(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException, ExecutionException {
+        Preconditions.checkState(channelPool != null, "ChannelPool is null");
+        return channelPool.acquire().get(timeout, unit);
+    }
+
+    /**
+     * 释放链路到channelPool中
+     * @param channel
+     */
+    public void releaseChannel(Channel channel) {
+        Preconditions.checkState(channelPool != null, "ChannelPool is null");
+        Future<Void> releaseFuture = channelPool.release(channel);
+        releaseFuture.addListener(new FutureListener<Void>() {
+            @Override
+            public void operationComplete(Future<Void> future) throws Exception {
+                logger.info("*** Channel-[{}] released to pool", channel.id());
+            }
+        });
+
     }
 
 
@@ -214,6 +270,65 @@ public class NettyPoolClient {
         send(msg, null);
     }
 
+
+    /**
+     * 指定Channel的异步消息发送，支持callback
+     *
+     * 该方法不会release链路，需要调用{@link NettyPoolClient#releaseChannel(Channel)}主动关闭，否则会造成链路一直被占用
+     * @param msg
+     * @param callback
+     * @param channel
+     */
+    public void sendByChannel(byte[] msg, SendCallback callback, Channel channel) {
+        final ByteBuf messageBuf = Unpooled.copiedBuffer(msg);
+        ChannelFuture writeFuture = channel.writeAndFlush(messageBuf);
+
+        // writeFuture添加回调
+        writeFuture.addListener(new ChannelFutureListener() {
+            @Override
+            public void operationComplete(ChannelFuture writeFuture) throws Exception {
+                if (writeFuture.isSuccess()) {
+                    // TODO: 这里面retain调用会报错，初步估计因为异步的关系，messageBuf已经被回收了
+                    logger.info("*** NettyPoolClient send success: [{}]", ByteBufUtil.hexDump(msg));
+                    if (callback != null) {
+                        callback.onSuccess(writeFuture);
+                    }
+                } else {
+                    logger.error("*** NettyPoolClient send failed: [{}]. Cause: {}", ByteBufUtil.hexDump(msg), Throwables.getStackTraceAsString(writeFuture.cause()));
+                    if (callback != null) {
+                        callback.onFailed(writeFuture);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * 指定channel的异步消息发送，不支持callback
+     *
+     * 该方法不会release链路，需要调用{@link NettyPoolClient#releaseChannel(Channel)}主动关闭，否则会造成链路一直被占用
+     * @param msg
+     * @param channel
+     */
+    public void sendByChannel(byte[] msg, Channel channel) {
+        sendByChannel(msg, null, channel);
+    }
+
+
+    /**
+     * 同步发送消息，等待消息发送成功
+     * 必须先通过{@link NettyPoolClient#acquireChannel()}获取Channel
+     * @param msg
+     * @param timeout
+     * @param unit
+     * @return
+     */
+    public boolean sendSync(byte[] msg, Channel channel, long timeout, TimeUnit unit) throws InterruptedException {
+        Preconditions.checkArgument(channel != null, "Channel is null");
+        final ByteBuf messageBuf = Unpooled.copiedBuffer(msg);
+        ChannelFuture writeFuture = channel.writeAndFlush(messageBuf);
+        return writeFuture.await(timeout, unit);
+    }
 
 
     /**

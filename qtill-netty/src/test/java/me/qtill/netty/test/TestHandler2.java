@@ -1,13 +1,13 @@
 package me.qtill.netty.test;
 
 import io.netty.channel.*;
-import me.qtill.netty.handler.HandlerAutoBind;
+import me.qtill.netty.handler.ChannelHandlerAutoBind;
 
 /**
  * @author paranoidq
  * @since 1.0.0
  */
-@HandlerAutoBind(indexAtChannel = 2, handlerName = "test2")
+@ChannelHandlerAutoBind(indexAtChannel = 2, handlerName = "test2")
 public class TestHandler2 extends ChannelOutboundHandlerAdapter {
 
     @Override

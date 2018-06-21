@@ -170,7 +170,6 @@ public final class NettyClientBootstrapBuilder {
 
     /**
      * 设置EventLoopGroup线程数
-     * <p>
      * 如果采用了共享EventLoopGroup，则该设置无效
      *
      * @param nThreads

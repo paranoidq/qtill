@@ -17,7 +17,7 @@ import io.netty.channel.pool.FixedChannelPool;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.FutureListener;
-import me.qtill.netty.handler.HandlerAutoBindProcessor;
+import me.qtill.netty.handler.ChannelHandlerAutoBindProcessor;
 import me.qtill.netty.util.heartbeat.HeartbeatHandler;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -34,11 +34,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 1. 支持参数可配置化
  * 2. 支持心跳包
- * 3. 支持断线自动重连
+ * 3. 支持断线自动重连 [TODO]
  * 4. 支持异步发送回调
- * <p>
- * TODO:
- * - 支持同步异步发送，（当前只支持异步发送）
+ * 5. 支持同步异步发送
+ *
  *
  * @author paranoidq
  * @since 1.0.0
@@ -46,12 +45,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class NettyPoolClient {
     private static final Logger logger = LoggerFactory.getLogger(NettyPoolClient.class);
 
+    // Netty Bootstrap实例
     private Bootstrap bootstrap;
 
     // 远端信息
     private InetSocketAddress remoteAddress;
     // 本端信息
     private InetSocketAddress localAddress;
+
+    // 是否正在运行
+    private volatile boolean running = false;
 
     // 自动断线重连
     private boolean       enableAutoReconnect         = false;
@@ -66,11 +69,11 @@ public class NettyPoolClient {
     private ByteBuf heartbeatSendToken      = Unpooled.directBuffer().writeBytes(new byte[]{0x00, 0x00});
     private ByteBuf heartbeatCheckToken     = Unpooled.directBuffer().writeBytes(new byte[]{0x00, 0x00});
     private long    heartBeatSendPeriod     = 5000;
-    private long    heartBeatCheckPeriod    = 5000;
+    private long    heartBeatCheckPeriod    = 10000;
     private int     heartBeatCheckTolerance = 3;
 
     // Handler自动绑定处理器处理的package
-    private String handleAutoProcessPackage;
+    private String channelHandlerAutoBindScanPackage;
 
     // 连接池
     private ChannelPool channelPool;
@@ -84,6 +87,7 @@ public class NettyPoolClient {
 
     /**
      * 构造函数
+     *
      * @param bootstrap
      * @param remoteAddress
      */
@@ -94,18 +98,20 @@ public class NettyPoolClient {
 
     /**
      * Builder模式
+     *
      * @param bootstrap
      * @param remoteIp
      * @param remotePort
      * @return
      */
-    public static Builder builder(Bootstrap bootstrap, java.lang.String remoteIp, int remotePort) {
+    public static Builder builder(Bootstrap bootstrap, String remoteIp, int remotePort) {
         return builder(bootstrap, new InetSocketAddress(remoteIp, remotePort));
     }
 
 
     /**
      * Builder模式
+     *
      * @param bootstrap
      * @param address
      * @return
@@ -116,12 +122,14 @@ public class NettyPoolClient {
 
 
     /**
-     * 启动Netty客户端
+     * 启动NettyClient
      */
     public void start() {
         if (keptConnections > 1) {
             final CountDownLatch latch = new CountDownLatch(keptConnections);
             logger.info("*** NettyPoolClient starting ...");
+
+            running = true;
 
             final List<Channel> preConnects = Lists.newArrayListWithExpectedSize(keptConnections);
             // 事先建立所有连接
@@ -156,10 +164,13 @@ public class NettyPoolClient {
     }
 
     /**
-     * 停止Netty客户端
+     * 关闭NettyClient
      */
-    public void stop() {
+    public void shutdown() {
         if (channelPool != null) {
+            bootstrap.config().group().shutdownGracefully().syncUninterruptibly();
+            running = false;
+            bootstrap = null;
             channelPool.close();
             channelPool = null;
         }
@@ -169,6 +180,7 @@ public class NettyPoolClient {
     /**
      * 获取链路
      * 该函数为同步调用，无限等待获取到channel，除非发生异常情况
+     *
      * @return
      * @throws ExecutionException
      * @throws InterruptedException
@@ -181,6 +193,7 @@ public class NettyPoolClient {
     /**
      * 获取链路
      * 该函数为同步调用，除非超过了规定的超时时间或发生异常
+     *
      * @param timeout
      * @param unit
      * @return
@@ -195,6 +208,7 @@ public class NettyPoolClient {
 
     /**
      * 释放链路到channelPool中
+     *
      * @param channel
      */
     public void releaseChannel(Channel channel) {
@@ -273,8 +287,9 @@ public class NettyPoolClient {
 
     /**
      * 指定Channel的异步消息发送，支持callback
-     *
+     * <p>
      * 该方法不会release链路，需要调用{@link NettyPoolClient#releaseChannel(Channel)}主动关闭，否则会造成链路一直被占用
+     *
      * @param msg
      * @param callback
      * @param channel
@@ -305,8 +320,9 @@ public class NettyPoolClient {
 
     /**
      * 指定channel的异步消息发送，不支持callback
-     *
+     * <p>
      * 该方法不会release链路，需要调用{@link NettyPoolClient#releaseChannel(Channel)}主动关闭，否则会造成链路一直被占用
+     *
      * @param msg
      * @param channel
      */
@@ -318,6 +334,7 @@ public class NettyPoolClient {
     /**
      * 同步发送消息，等待消息发送成功
      * 必须先通过{@link NettyPoolClient#acquireChannel()}获取Channel
+     *
      * @param msg
      * @param timeout
      * @param unit
@@ -416,13 +433,20 @@ public class NettyPoolClient {
             return this;
         }
 
+        /**
+         * 如果heartBeatCheckTolerance大于0，则超过次数没有收到心跳包会主动断开连接
+         * 如果heartBeatCheckTolerance小于等于0，则不会主动断开连接
+         *
+         * @param heartBeatCheckTolerance
+         * @return
+         */
         public Builder heartBeatCheckTolerance(int heartBeatCheckTolerance) {
             client.heartBeatCheckTolerance = heartBeatCheckTolerance;
             return this;
         }
 
         public Builder handlerAutoBindProcessor(String handleAutoProcessPackage) {
-            client.handleAutoProcessPackage = handleAutoProcessPackage;
+            client.channelHandlerAutoBindScanPackage = handleAutoProcessPackage;
             return this;
         }
 
@@ -463,8 +487,8 @@ public class NettyPoolClient {
                 ));
 
                 // 自动添加handler
-                if (!StringUtils.isEmpty(client.handleAutoProcessPackage)) {
-                    new HandlerAutoBindProcessor(client.handleAutoProcessPackage).autoBind(ch.pipeline());
+                if (!StringUtils.isEmpty(client.channelHandlerAutoBindScanPackage)) {
+                    new ChannelHandlerAutoBindProcessor(client.channelHandlerAutoBindScanPackage).autoBind(ch.pipeline());
                 }
             }
         }

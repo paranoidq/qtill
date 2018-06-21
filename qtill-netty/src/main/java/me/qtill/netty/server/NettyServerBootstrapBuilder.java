@@ -227,23 +227,6 @@ public class NettyServerBootstrapBuilder {
             .childOption(ChannelOption.RCVBUF_ALLOCATOR,
                 new AdaptiveRecvByteBufAllocator(recvByteBufSizeMin, recvByteBufSizeInit, recvByteBufSizeMax))
         ;
-
-//        if (!bossHandlers.isEmpty()) {
-//            for (ChannelHandler handler : bossHandlers) {
-//                serverBootstrap.handler(handler);
-//            }
-//        }
-//        if (!workerHandlers.isEmpty()) {
-//            serverBootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
-//                @Override
-//                protected void initChannel(SocketChannel ch) throws Exception {
-//                    ChannelPipeline pipeline = ch.pipeline();
-//                    for (ChannelHandler handler : workerHandlers) {
-//                        pipeline.addLast(handler);
-//                    }
-//                }
-//            });
-//        }
         return serverBootstrap;
     }
 

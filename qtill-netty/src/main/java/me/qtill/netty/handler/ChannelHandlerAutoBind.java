@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
-public @interface HandlerAutoBind {
+public @interface ChannelHandlerAutoBind {
 
     /**
      * 指定ChannelHandler在Bootstrap装配时的名称

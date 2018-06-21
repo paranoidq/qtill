@@ -6,6 +6,8 @@ import me.qtill.netty.client.NettyPoolClient;
 import me.qtill.netty.client.NettyClientBootstrapBuilder;
 import me.qtill.netty.client.SendCallback;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author paranoidq
  * @since 1.0.0
@@ -17,11 +19,15 @@ public class NettyClientSample {
             .enableHeartbeatSend(true)
             .heartBeatSendPeriodMillis(2000)
             .enableHeartbeatCheck(true)
+            .heartBeatCheckTolerance(-1)
             .heartBeatCheckPeriodMillis(2000)
             .enableAutoReconnect(true)
             .autoReconnectMaxTimes(2)
+            .handlerAutoBindProcessor(new String("me.qtill.netty.test"))
+            .keptConnections(3)
             .build();
 
+        client.start();
         client.send("ab".getBytes(), new SendCallback() {
             @Override
             public void onSuccess(ChannelFuture future) {
@@ -34,5 +40,6 @@ public class NettyClientSample {
             }
         });
 
+        TimeUnit.SECONDS.sleep(1001223);
     }
 }

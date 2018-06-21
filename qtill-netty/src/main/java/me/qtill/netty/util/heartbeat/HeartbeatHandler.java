@@ -8,6 +8,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,6 +87,8 @@ public class HeartbeatHandler extends ChannelDuplexHandler {
             ByteBuf rcv = (ByteBuf) msg;
             if (ByteBufUtil.equals(rcv, heartbeatCheckToken)) {
                 heartbeatLossCounter.set(0);
+                logger.info("*** Peer heartbeat received: [{}]", ByteBufUtil.hexDump(rcv.retain()));
+                ReferenceCountUtil.release(rcv);
             } else {
                 ctx.fireChannelRead(msg);
             }

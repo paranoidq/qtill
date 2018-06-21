@@ -20,7 +20,7 @@ public class NettyClientSample {
             .heartBeatSendPeriodMillis(2000)
             .enableHeartbeatCheck(true)
             .heartBeatCheckTolerance(-1)
-            .heartBeatCheckPeriodMillis(2000)
+            .heartBeatCheckPeriodMillis(4000)
             .enableAutoReconnect(true)
             .autoReconnectMaxTimes(2)
             .handlerAutoBindProcessor(new String("me.qtill.netty.test"))

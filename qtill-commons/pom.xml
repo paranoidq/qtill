@@ -12,4 +12,43 @@
     <artifactId>qtill-commons</artifactId>
 
 
+    <dependencies>
+    <!--# 对象构造工具 start-->
+        <dependency>
+            <groupId>org.objenesis</groupId>
+            <artifactId>objenesis</artifactId>
+            <version>2.6</version>
+        </dependency>
+    <!--# 对象构造依赖 end -->
+
+    <!--# 序列化依赖 start-->
+        <!--kryo-->
+        <dependency>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
+            <version>4.0.0</version>
+        </dependency>
+
+        <!--hessian-->
+        <dependency>
+            <groupId>com.caucho</groupId>
+            <artifactId>hessian</artifactId>
+            <version>4.0.51</version>
+        </dependency>
+
+        <!-- Protostuff -->
+        <dependency>
+            <groupId>com.dyuproject.protostuff</groupId>
+            <artifactId>protostuff-core</artifactId>
+            <version>1.0.9</version>
+        </dependency>
+        <dependency>
+            <groupId>com.dyuproject.protostuff</groupId>
+            <artifactId>protostuff-runtime</artifactId>
+            <version>1.0.9</version>
+        </dependency>
+    <!--# 序列化依赖 end-->
+
+
+    </dependencies>
 </project>

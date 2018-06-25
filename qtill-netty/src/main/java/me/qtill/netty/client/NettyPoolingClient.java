@@ -42,8 +42,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author paranoidq
  * @since 1.0.0
  */
-public class NettyPoolClient {
-    private static final Logger logger = LoggerFactory.getLogger(NettyPoolClient.class);
+public class NettyPoolingClient {
+    private static final Logger logger = LoggerFactory.getLogger(NettyPoolingClient.class);
 
     // Netty Bootstrap实例
     private Bootstrap bootstrap;
@@ -91,7 +91,7 @@ public class NettyPoolClient {
      * @param bootstrap
      * @param remoteAddress
      */
-    private NettyPoolClient(Bootstrap bootstrap, InetSocketAddress remoteAddress) {
+    private NettyPoolingClient(Bootstrap bootstrap, InetSocketAddress remoteAddress) {
         this.bootstrap = bootstrap;
         this.remoteAddress = remoteAddress;
     }
@@ -127,7 +127,7 @@ public class NettyPoolClient {
     public void start() {
         if (keptConnections > 1) {
             final CountDownLatch latch = new CountDownLatch(keptConnections);
-            logger.info("*** NettyPoolClient starting ...");
+            logger.info("*** NettyPoolingClient starting ...");
 
             running = true;
 
@@ -152,14 +152,14 @@ public class NettyPoolClient {
             try {
                 latch.await(30, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
-                logger.error("*** NettyPoolClient started failed. Given [{}], but only [{}] connections established", keptConnections, preConnects.size());
+                logger.error("*** NettyPoolingClient started failed. Given [{}], but only [{}] connections established", keptConnections, preConnects.size());
             }
 
             // 返还连接池，等待取用
             for (Channel channel : preConnects) {
                 channelPool.release(channel);
             }
-            logger.info("*** NettyPoolClient started success");
+            logger.info("*** NettyPoolingClient started success");
         }
     }
 
@@ -249,12 +249,12 @@ public class NettyPoolClient {
                             public void operationComplete(ChannelFuture writeFuture) throws Exception {
                                 if (writeFuture.isSuccess()) {
                                     // TODO: 这里面retain调用会报错，初步估计因为异步的关系，messageBuf已经被回收了
-                                    logger.info("*** NettyPoolClient send success: [{}]", ByteBufUtil.hexDump(msg));
+                                    logger.info("*** NettyPoolingClient send success: [{}]", ByteBufUtil.hexDump(msg));
                                     if (callback != null) {
                                         callback.onSuccess(writeFuture);
                                     }
                                 } else {
-                                    logger.error("*** NettyPoolClient send failed: [{}]. Cause: {}", ByteBufUtil.hexDump(msg), Throwables.getStackTraceAsString(writeFuture.cause()));
+                                    logger.error("*** NettyPoolingClient send failed: [{}]. Cause: {}", ByteBufUtil.hexDump(msg), Throwables.getStackTraceAsString(writeFuture.cause()));
                                     if (callback != null) {
                                         callback.onFailed(writeFuture);
                                     }
@@ -265,7 +265,7 @@ public class NettyPoolClient {
                         channelPool.release(channel);
                     }
                 } else {
-                    logger.error("*** NettyPoolClient channel acquire failed. Cause: {}", Throwables.getStackTraceAsString(acquireFuture.cause()));
+                    logger.error("*** NettyPoolingClient channel acquire failed. Cause: {}", Throwables.getStackTraceAsString(acquireFuture.cause()));
                     if (enableAutoReconnect) {
                         channelPool.acquire();
                     }
@@ -288,7 +288,7 @@ public class NettyPoolClient {
     /**
      * 指定Channel的异步消息发送，支持callback
      * <p>
-     * 该方法不会release链路，需要调用{@link NettyPoolClient#releaseChannel(Channel)}主动关闭，否则会造成链路一直被占用
+     * 该方法不会release链路，需要调用{@link NettyPoolingClient#releaseChannel(Channel)}主动关闭，否则会造成链路一直被占用
      *
      * @param msg
      * @param callback
@@ -304,12 +304,12 @@ public class NettyPoolClient {
             public void operationComplete(ChannelFuture writeFuture) throws Exception {
                 if (writeFuture.isSuccess()) {
                     // TODO: 这里面retain调用会报错，初步估计因为异步的关系，messageBuf已经被回收了
-                    logger.info("*** NettyPoolClient send success: [{}]", ByteBufUtil.hexDump(msg));
+                    logger.info("*** NettyPoolingClient send success: [{}]", ByteBufUtil.hexDump(msg));
                     if (callback != null) {
                         callback.onSuccess(writeFuture);
                     }
                 } else {
-                    logger.error("*** NettyPoolClient send failed: [{}]. Cause: {}", ByteBufUtil.hexDump(msg), Throwables.getStackTraceAsString(writeFuture.cause()));
+                    logger.error("*** NettyPoolingClient send failed: [{}]. Cause: {}", ByteBufUtil.hexDump(msg), Throwables.getStackTraceAsString(writeFuture.cause()));
                     if (callback != null) {
                         callback.onFailed(writeFuture);
                     }
@@ -321,7 +321,7 @@ public class NettyPoolClient {
     /**
      * 指定channel的异步消息发送，不支持callback
      * <p>
-     * 该方法不会release链路，需要调用{@link NettyPoolClient#releaseChannel(Channel)}主动关闭，否则会造成链路一直被占用
+     * 该方法不会release链路，需要调用{@link NettyPoolingClient#releaseChannel(Channel)}主动关闭，否则会造成链路一直被占用
      *
      * @param msg
      * @param channel
@@ -333,7 +333,7 @@ public class NettyPoolClient {
 
     /**
      * 同步发送消息，等待消息发送成功
-     * 必须先通过{@link NettyPoolClient#acquireChannel()}获取Channel
+     * 必须先通过{@link NettyPoolingClient#acquireChannel()}获取Channel
      *
      * @param msg
      * @param timeout
@@ -349,12 +349,12 @@ public class NettyPoolClient {
 
 
     /**
-     * NettyPoolClient Builder
+     * NettyPoolingClient Builder
      */
     public static class Builder {
-        private NettyPoolClient client;
+        private NettyPoolingClient client;
 
-        public NettyPoolClient build() {
+        public NettyPoolingClient build() {
             client.bootstrap.remoteAddress(client.remoteAddress);
             if (client.localAddress != null) {
                 client.bootstrap.localAddress(client.localAddress);
@@ -375,7 +375,7 @@ public class NettyPoolClient {
 
 
         public Builder(Bootstrap bootstrap, InetSocketAddress remoteAddress) {
-            this.client = new NettyPoolClient(bootstrap, remoteAddress);
+            this.client = new NettyPoolingClient(bootstrap, remoteAddress);
         }
 
         public Builder localAddress(InetSocketAddress localAddress) {

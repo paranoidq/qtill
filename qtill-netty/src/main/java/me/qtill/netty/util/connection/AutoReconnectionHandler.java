@@ -16,23 +16,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class AutoReconnectionHandler extends ChannelDuplexHandler {
     private static final Logger logger = LoggerFactory.getLogger(AutoReconnectionHandler.class);
 
-    private boolean autoReconnect = false;
-    private int autoReconnectMaxTimes = 3;
     private ConnectCommand connectCommand;
-    private AtomicInteger autoReconnectCurrentTimes = new AtomicInteger(0);
 
-
-    public AutoReconnectionHandler() {
-
-    }
-
-    public AutoReconnectionHandler enableAutoReconnect(int autoReconnectMaxTimes, ConnectCommand connectCommand) {
-        this.autoReconnect = true;
-        this.autoReconnectMaxTimes = autoReconnectMaxTimes;
+    public AutoReconnectionHandler(ConnectCommand connectCommand) {
         this.connectCommand = connectCommand;
-        return this;
     }
-
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -43,17 +31,11 @@ public class AutoReconnectionHandler extends ChannelDuplexHandler {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         logger.warn("*** Connection inactive");
-        if (autoReconnect) {
-            if (autoReconnectCurrentTimes.incrementAndGet() < autoReconnectMaxTimes) {
-                logger.warn("*** Try connecting [" + autoReconnectCurrentTimes.get() +"] ...");
-                try {
-                    connectCommand.call();
-                } catch (Throwable throwable) {
-                    logger.warn("*** Try connecting failed. Cause: [" + throwable.toString() + "]");
-                }
-            } else {
-                logger.warn("*** Try connect more than [" + autoReconnectMaxTimes + "] times. Stop trying");
-            }
+        logger.warn("*** Try reconnecting  ...");
+        try {
+            connectCommand.invoke();
+        } catch (Throwable throwable) {
+            logger.warn("*** Try reconnecting failed. Cause: [" + throwable.toString() + "]");
         }
         ctx.fireChannelInactive();
     }

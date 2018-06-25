@@ -2,37 +2,16 @@ package me.qtill.netty.util.connection;
 
 import io.netty.channel.ChannelFuture;
 import io.netty.util.internal.ThrowableUtil;
-
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
+ * 连接命令，实现类需要实现具体的连接方法
+ *
  * @author paranoidq
  * @since 1.0.0
  */
-public abstract class ConnectCommand {
+public interface ConnectCommand {
 
-    private static final Logger logger = Logger.getLogger(ConnectCommand.class.getName());
-
-
-    public void call() {
-        try {
-            ChannelFuture connectFuture = doConnect();
-            if (connectFuture != null) {
-                connectFuture.sync();
-                if (connectFuture.isSuccess()) {
-                    logger.info("*** Connection success");
-                }
-            }
-        } catch (Exception e) {
-            logger.warning("*** Try connecting failed. Causes: [" + ThrowableUtil.stackTraceToString(e) + "]");
-        }
-    }
-
-    /**
-     * 该方法必须是同步的
-     * @return
-     * @throws Exception
-     */
-    public abstract ChannelFuture doConnect() throws Exception;
-
+    void invoke();
 }

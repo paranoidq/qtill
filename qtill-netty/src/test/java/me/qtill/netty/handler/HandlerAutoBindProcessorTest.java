@@ -1,7 +1,7 @@
 package me.qtill.netty.handler;
 
 import io.netty.bootstrap.Bootstrap;
-import me.qtill.netty.client.NettyPoolClient;
+import me.qtill.netty.client.NettyPoolingClient;
 import me.qtill.netty.client.NettyClientBootstrapBuilder;
 
 import java.util.concurrent.TimeUnit;
@@ -14,7 +14,7 @@ public class HandlerAutoBindProcessorTest {
 
     public static void main(java.lang.String[] args) throws Exception {
         Bootstrap bootstrap = NettyClientBootstrapBuilder.getInstance().build();
-        NettyPoolClient client = NettyPoolClient.builder(bootstrap, "0.0.0.0", 16001)
+        NettyPoolingClient client = NettyPoolingClient.builder(bootstrap, "0.0.0.0", 16001)
             .enableHeartbeatSend(true)
             .heartBeatSendPeriodMillis(2000)
             .enableHeartbeatCheck(true)

@@ -5,6 +5,7 @@ import me.qtill.commons.serialization.jdk.JdkSerializer;
 import me.qtill.commons.serialization.kyro.KryoSerializer;
 import me.qtill.commons.serialization.protostuff.ProtostuffSerializer;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,4 +31,5 @@ public class SerializerUtil {
     public static final Serializer getSerializer(SerializerType type) {
         return serializerMap.get(type);
     }
+
 }

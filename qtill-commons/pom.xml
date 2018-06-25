@@ -35,12 +35,21 @@
             <version>3.2.2</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.9.3</version>
+        </dependency>
+        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>23.6-jre</version>
         </dependency>
     <!--# 工具包依赖 end-->
-
 
 
     <!--# 对象构造工具 start-->
@@ -78,6 +87,15 @@
             <version>1.0.9</version>
         </dependency>
     <!--# 序列化依赖 end-->
+
+
+    <!--# 反射依赖 start -->
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>3.2.5</version>
+        </dependency>
+    <!--# 反射依赖 end -->
 
 
     </dependencies>

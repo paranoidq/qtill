@@ -7,6 +7,8 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import me.qtill.netty.server.NettyServer;
 import me.qtill.netty.server.NettyServerBootstrapBuilder;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
 

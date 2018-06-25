@@ -22,7 +22,7 @@ public class Charsets {
      * @return
      */
     public static Charset of(String charset) {
-        Preconditions.checkArgument(StringUtils.isEmpty(charset), "charset is null");
+        Preconditions.checkArgument(!StringUtils.isEmpty(charset), "charset is null");
         return Charset.forName(charset);
     }
 

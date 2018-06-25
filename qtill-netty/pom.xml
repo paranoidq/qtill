@@ -51,10 +51,6 @@
             <artifactId>commons-lang</artifactId>
         </dependency>
         <dependency>
-            <groupId>commons-lang3</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>

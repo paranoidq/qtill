@@ -30,7 +30,7 @@ public class NettyServer {
 
     private volatile boolean running = false;
 
-    // ×Ô¶¯ĞÄÌø°ü·¢ËÍ
+    // è‡ªåŠ¨å¿ƒè·³åŒ…å‘é€
     private boolean enableHeartbeatSend     = false;
     private boolean enableHeartbeatCheck    = false;
     private boolean normalMsgAsHeartbeat    = false;
@@ -40,11 +40,11 @@ public class NettyServer {
     private long    heartBeatCheckPeriod    = 10000;
     private int     heartBeatCheckTolerance = 3;
 
-    // Handler×Ô¶¯°ó¶¨´¦ÀíÆ÷´¦ÀíµÄpackage
+    // Handlerè‡ªåŠ¨ç»‘å®šå¤„ç†å™¨å¤„ç†çš„package
     private String channelHandlerAutoBindScanPackage;
 
     /**
-     * ¹¹Ôìº¯Êı
+     * æ„é€ å‡½æ•°
      *
      * @param serverBootstrap
      * @param listenAddress
@@ -56,7 +56,7 @@ public class NettyServer {
 
 
     /**
-     * BuilderÄ£Ê½
+     * Builderæ¨¡å¼
      *
      * @param serverBootstrap
      * @param listenAddress
@@ -67,7 +67,7 @@ public class NettyServer {
     }
 
     /**
-     * BuilderÄ£Ê½
+     * Builderæ¨¡å¼
      *
      * @param serverBootstrap
      * @param listenIp
@@ -79,7 +79,7 @@ public class NettyServer {
     }
 
     /**
-     * BuilderÄ£Ê½
+     * Builderæ¨¡å¼
      *
      * @param serverBootstrap
      * @param listenPort
@@ -91,7 +91,7 @@ public class NettyServer {
 
 
     /**
-     * Æô¶¯NettyServer
+     * å¯åŠ¨NettyServer
      */
     public void start() {
         ChannelFuture bindFuture = null;
@@ -111,7 +111,7 @@ public class NettyServer {
 
 
     /**
-     * ¹Ø±ÕNettyServer
+     * å…³é—­NettyServer
      */
     public void shutdown() {
         if (running) {
@@ -136,7 +136,7 @@ public class NettyServer {
             server.serverBootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 protected void initChannel(SocketChannel ch) throws Exception {
-                    // ĞÄÌø°ü
+                    // å¿ƒè·³åŒ…
                     ch.pipeline().addLast(new IdleStateHandler(server.heartBeatCheckPeriod, server.heartBeatSendPeriod, Math.max(
                         server.heartBeatCheckPeriod, server.heartBeatSendPeriod), TimeUnit.MILLISECONDS));
                     ch.pipeline().addLast(new HeartbeatHandler(
@@ -148,7 +148,7 @@ public class NettyServer {
                         server.heartBeatCheckTolerance
                     ));
 
-                    // ×Ô¶¯Ìí¼Óhandler
+                    // è‡ªåŠ¨æ·»åŠ handler
                     if (!StringUtils.isEmpty(server.channelHandlerAutoBindScanPackage)) {
                         new ChannelHandlerAutoBindProcessor(server.channelHandlerAutoBindScanPackage).autoBind(ch.pipeline());
                     }
@@ -198,8 +198,8 @@ public class NettyServer {
         }
 
         /**
-         * Èç¹ûheartBeatCheckTolerance´óÓÚ0£¬Ôò³¬¹ı´ÎÊıÃ»ÓĞÊÕµ½ĞÄÌø°ü»áÖ÷¶¯¶Ï¿ªÁ¬½Ó
-         * Èç¹ûheartBeatCheckToleranceĞ¡ÓÚµÈÓÚ0£¬Ôò²»»áÖ÷¶¯¶Ï¿ªÁ¬½Ó
+         * å¦‚æœheartBeatCheckToleranceå¤§äº0ï¼Œåˆ™è¶…è¿‡æ¬¡æ•°æ²¡æœ‰æ”¶åˆ°å¿ƒè·³åŒ…ä¼šä¸»åŠ¨æ–­å¼€è¿æ¥
+         * å¦‚æœheartBeatCheckToleranceå°äºç­‰äº0ï¼Œåˆ™ä¸ä¼šä¸»åŠ¨æ–­å¼€è¿æ¥
          * @param heartBeatCheckTolerance
          * @return
          */

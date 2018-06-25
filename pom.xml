@@ -33,7 +33,6 @@
         <module>qtill-redis</module>
         <module>qtill-netty</module>
         <module>qtill-zookeeper</module>
-        <module>qtill-serialization</module>
         <module>qtill-limiter</module>
         <module>qtill-rpc</module>
     </modules>

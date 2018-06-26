@@ -27,6 +27,10 @@ import java.util.Collections;
  */
 public class CodecUtil {
 
+    private CodecUtil() {
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * BASE64编码
      * @param data

@@ -61,10 +61,13 @@ public class ChannelHandlerAutoBindProcessor {
      *
      * 加载后的实现类会按照{@link ChannelHandlerAutoBind#indexAtChannel()}排序，值越小位置越靠前
      *
+     * TODO: 需要注意：在web应用中ClassPath有可能无法获取package下的class！！！
+     *
      * @param basePackage
      * @return
      * @throws IOException
      */
+    @Deprecated
     private void process(String basePackage) throws IOException {
         ClassPath classPath = ClassPath.from(Thread.currentThread().getContextClassLoader());
         ImmutableSet<ClassPath.ClassInfo> classes = classPath.getTopLevelClasses(basePackage);

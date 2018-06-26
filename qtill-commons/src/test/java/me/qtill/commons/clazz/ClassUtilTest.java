@@ -2,6 +2,7 @@ package me.qtill.commons.clazz;
 
 import org.junit.Test;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
@@ -35,5 +36,12 @@ public class ClassUtilTest {
         List<Class<?>> interfaces = ClassUtil.getAllInterfaces(HelloImpl.class);
         assertEquals(1, interfaces.size());
         assertEquals(IHello.class, interfaces.get(0));
+    }
+
+
+    @Test
+    public void testgetClasses() throws IOException {
+        List<Class<?>> classes = ClassUtil.getClasses("me.qtill.commons.clazz", IHello.class);
+        assertEquals(2, classes.size());
     }
 }

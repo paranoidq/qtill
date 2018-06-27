@@ -12,12 +12,12 @@ import static org.junit.Assert.assertEquals;
  * @author paranoidq
  * @since 1.0.0
  */
-public class ClassUtilTest {
+public class ClassUtilxTest {
 
     @Test
     public void testGetConstructor() throws NoSuchMethodException {
-        Constructor<IHello> constructor = ClassUtil.getConstructor(HelloImpl.class, null);
-        Constructor<IHello> constructor2 = ClassUtil.getConstructor(HelloImpl.class, new Class[]{String.class});
+        Constructor<IHello> constructor = ClassUtilx.getConstructor(HelloImpl.class, null);
+        Constructor<IHello> constructor2 = ClassUtilx.getConstructor(HelloImpl.class, new Class[]{String.class});
 
         assertEquals(HelloImpl.class.getConstructor(null), constructor);
         assertEquals(HelloImpl.class.getConstructor(new Class[]{String.class}), constructor2);
@@ -26,14 +26,14 @@ public class ClassUtilTest {
 
     @Test
     public void testGetPackageName() {
-        String pkgNme = ClassUtil.getPackageCononicalName(HelloImpl.class);
+        String pkgNme = ClassUtilx.getPackageCononicalName(HelloImpl.class);
         assertEquals("me.qtill.commons.clazz", pkgNme);
     }
 
 
     @Test
     public void testGetInterfaces() {
-        List<Class<?>> interfaces = ClassUtil.getAllInterfaces(HelloImpl.class);
+        List<Class<?>> interfaces = ClassUtilx.getAllInterfaces(HelloImpl.class);
         assertEquals(1, interfaces.size());
         assertEquals(IHello.class, interfaces.get(0));
     }
@@ -41,7 +41,7 @@ public class ClassUtilTest {
 
     @Test
     public void testgetClasses() throws IOException {
-        List<Class<?>> classes = ClassUtil.getClasses("me.qtill.commons.clazz", IHello.class);
+        List<Class<?>> classes = ClassUtilx.getClasses("me.qtill.commons.clazz", IHello.class);
         assertEquals(2, classes.size());
     }
 }

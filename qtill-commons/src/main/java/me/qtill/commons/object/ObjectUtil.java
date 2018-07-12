@@ -4,6 +4,8 @@ import org.objenesis.Objenesis;
 import org.objenesis.ObjenesisStd;
 import org.objenesis.instantiator.ObjectInstantiator;
 
+import java.io.*;
+
 /**
  * @author paranoidq
  * @since 1.0.0
@@ -33,6 +35,29 @@ public final class ObjectUtil {
      */
     public static <T> T newInstance(Class<T> clazz) {
         return (T) objenesis.newInstance(clazz);
+    }
+
+
+    /**
+     * 拷贝对象
+     *
+     * @param o
+     * @param <T>
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    public static <T> T clone(T o) throws IOException, ClassNotFoundException {
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(bout);
+        out.writeObject(o);
+        out.close();
+        ByteArrayInputStream bin = new ByteArrayInputStream(bout
+            .toByteArray());
+        ObjectInputStream in = new ObjectInputStream(bin);
+        Object ret = in.readObject();
+        in.close();
+        return (T) ret;
     }
 
 }

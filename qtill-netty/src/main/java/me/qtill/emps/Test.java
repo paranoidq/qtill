@@ -1,5 +1,6 @@
 package me.qtill.emps;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.base.Throwables;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
@@ -19,6 +20,7 @@ import java.util.Scanner;
  */
 public class Test {
 
+    public static Stopwatch stopwatch = Stopwatch.createUnstarted();
 
     public static void main(String[] args) {
 //        Bootstrap bootstrap = NettyClientBootstrapBuilder.getInstance().build();

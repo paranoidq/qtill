@@ -196,7 +196,7 @@ public final class BinaryUtil {
      * @return
      */
     public static String toBitString(byte b) {
-        StringBuilder sb = new StringBuilder(8) ;
+        StringBuilder sb = new StringBuilder(8);
         for (int i = 7; i >= 0; i--) {
             sb.append((byte) ((b >> i) & 0x1));
         }

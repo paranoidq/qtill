@@ -36,6 +36,10 @@
         <module>qtill-limiter</module>
         <module>qtill-rpc</module>
         <module>qtill-config</module>
+        <module>qtill-ehcache</module>
+        <module>qtill-algorithm</module>
+        <module>qtill-akka</module>
+        <module>qtill-snowflake</module>
     </modules>
 
 

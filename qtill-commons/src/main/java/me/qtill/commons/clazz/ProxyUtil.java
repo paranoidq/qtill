@@ -8,6 +8,23 @@ import javassist.CtNewConstructor;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
+import me.qtill.commons.clazz.test.BarClass;
+import me.qtill.commons.clazz.test.FooClass;
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.NamingStrategy;
+import net.bytebuddy.TypeCache;
+import net.bytebuddy.agent.ByteBuddyAgent;
+import net.bytebuddy.description.type.TypeDescription;
+import net.bytebuddy.dynamic.DynamicType;
+import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
+import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;
+import net.bytebuddy.dynamic.scaffold.InstrumentedType;
+import net.bytebuddy.implementation.FixedValue;
+import net.bytebuddy.implementation.Implementation;
+import net.bytebuddy.implementation.InvocationHandlerAdapter;
+import net.bytebuddy.implementation.bytecode.ByteCodeAppender;
+import net.bytebuddy.matcher.ElementMatchers;
+import net.bytebuddy.pool.TypePool;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 
@@ -100,6 +117,73 @@ public class ProxyUtil {
         mCtc.addMethod(ctMethod);
         Class<?> pc = mCtc.toClass();
         return clazzType.cast(pc.newInstance());
+    }
+
+
+    public static void main(String[] args) throws Exception {
+        FooClass foo = new FooClass();
+        BarClass bar = new BarClass();
+//        ByteBuddyAgent.install();
+//        new ByteBuddy()
+//            .redefine(BarClass.class)
+//            .method(ElementMatchers.named("m"))
+//            .intercept(FixedValue.value("xxx"))
+////            .name(FooClass.class.getName())
+//            .make()
+//            .load(FooClass.class.getClassLoader(), ClassReloadingStrategy.fromInstalledAgent())
+//        ;
+
+//        System.out.println(foo.m());
+//        System.out.println(bar.m());
+
+
+//        DynamicType.Builder<BarClass> builder = new ByteBuddy()
+//            .subclass(BarClass.class);
+//        Class<?> sub = builder.make().load(ClassLoader.getSystemClassLoader()).getLoaded();
+//        System.out.println(sub.getName());
+
+
+//        DynamicType.Builder<BarClass> builder = new ByteBuddy().with(new NamingStrategy.SuffixingRandom("_suffix", "prefi_"){
+//            @Override
+//            protected String name(TypeDescription superClass) {
+//                return "aa" + super.name(superClass);
+//            }
+//        })
+//            .subclass(BarClass.class);
+//        Class<?> sub = builder.make().load(ClassLoader.getSystemClassLoader()).getLoaded();
+//        System.out.println(sub.getName());
+
+
+
+//        DynamicType.Builder<BarClass> builder = new ByteBuddy().redefine(BarClass.class).name("aaa")
+//            .method(ElementMatchers.named("m")).intercept(FixedValue.value("xxx"));
+//        Class<?> sub = builder.make().load(ClassLoader.getSystemClassLoader()).getLoaded();
+//
+//        System.out.println(sub.getName());
+//        System.out.println(sub.getMethod("m").invoke(sub
+//            .newInstance(), null));
+
+
+
+        // 通过javaavent + hotswap动态修改已加载的类的行为
+//        ByteBuddyAgent.install();
+//        DynamicType.Builder<BarClass> builder = new ByteBuddy().redefine(BarClass.class)
+//            .method(ElementMatchers.named("m")).intercept(FixedValue.value("xxx"));
+//        Class<?> sub = builder.make().load(ClassLoader.getSystemClassLoader(), ClassReloadingStrategy.fromInstalledAgent()).getLoaded();
+//
+//        System.out.println(sub.getName());
+//        System.out.println(bar.m());
+
+
+
+        // 动态修改
+        ByteBuddyAgent.install();
+        DynamicType.Builder<BarClass> builder = new ByteBuddy().redefine(BarClass.class)
+            .field(ElementMatchers.named("test")).value("test2");
+
+        Class<?> sub = builder.make().load(ClassLoader.getSystemClassLoader(), ClassReloadingStrategy.fromInstalledAgent()).getLoaded();
+        System.out.println(sub.getName());
+        System.out.println(BarClass.test);
     }
 
 }

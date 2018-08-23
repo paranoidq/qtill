@@ -9,22 +9,23 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>qtill-zookeeper</artifactId>
+    <artifactId>qtill-akka</artifactId>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.typesafe.akka/akka-actor -->
         <dependency>
-            <groupId>org.apache.zookeeper</groupId>
-            <artifactId>zookeeper</artifactId>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-actor_2.12</artifactId>
+            <version>2.5.14</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-client</artifactId>
-            <version>4.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-recipes</artifactId>
-        </dependency>
-    </dependencies>
 
+        <!-- https://mvnrepository.com/artifact/com.typesafe.akka/akka-testkit -->
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-testkit_2.12</artifactId>
+            <version>2.5.14</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
 </project>

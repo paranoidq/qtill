@@ -40,6 +40,7 @@
         <module>qtill-algorithm</module>
         <module>qtill-akka</module>
         <module>qtill-snowflake</module>
+        <module>qtill-dstributedLock</module>
     </modules>
 
 

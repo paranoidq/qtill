@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit;
  * [思路]
  * 1. 这里是否获取读写锁的时候有一个特点：即建立连接后已经创建了节点，读写锁的获取并不改变状态，而仅仅只是判断一下自己在顺序节点中相对位置而已
  * 这与通常JUC中的lock有着本质的区别，JUC中的lock是会使用一个volatile类似的变量通过CAS操作状态来控制加锁还是阻塞等待的！！！
+ * 2. 这里的非阻塞锁很容易实现，主要的处理细节都在阻塞锁上，技术包括：watcher、JUC lock、排序节点等，都是为了阻塞锁和唤醒而设计的
  * <p>
  * <p>
  * [设计]
@@ -44,6 +45,10 @@ import java.util.concurrent.TimeUnit;
  * readlock时如果不能获取成功，应该watch小于自己的最后一个写锁节点，因为读锁获取的话，只要前面没有写锁即可
  * writelock时如果不能获取成功，应该watch上一个节点（无论是写锁还是读锁），因为写锁需要独占
  * 2. 并不是准确的实现，其中有很多并发问题没有处理干净，比如是否要用volatile
+ * <p>
+ * <p>
+ * <p>
+ * reference : https://github.com/code4wt/distributed_lock
  *
  * @author paranoidq
  * @since 1.0.0

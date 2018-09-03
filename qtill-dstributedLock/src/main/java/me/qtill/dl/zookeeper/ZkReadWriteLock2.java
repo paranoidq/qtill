@@ -18,6 +18,9 @@ import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
 
 /**
+ *
+ * 优化主要是在阻塞锁上，其他的非阻塞基本一致
+ *
  * Created by code4wt on 17/8/27.
  */
 public class ZkReadWriteLock2 implements ReadWriteLock {

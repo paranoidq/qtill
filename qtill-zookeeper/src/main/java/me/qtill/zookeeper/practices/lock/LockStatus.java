@@ -1,4 +1,4 @@
-package me.qtill.zookeeper.lock;
+package me.qtill.zookeeper.practices.lock;
 
 /**
  * @author paranoidq

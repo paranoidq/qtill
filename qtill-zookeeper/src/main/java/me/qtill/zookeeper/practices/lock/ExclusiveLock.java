@@ -1,7 +1,5 @@
-package me.qtill.zookeeper.lock;
+package me.qtill.zookeeper.practices.lock;
 
-import org.apache.curator.framework.recipes.locks.InterProcessLock;
-import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 

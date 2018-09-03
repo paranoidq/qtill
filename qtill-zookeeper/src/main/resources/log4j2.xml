@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO" monitorInterval="30">
+
+    <!-- custom configuration properties -->
+    <Properties>
+
+        <!--log file folder-->
+        <Property name="baseLogPath">logs/</Property>
+
+        <!--daily log file name-->
+        <Property name="dailyLogFileName">daily</Property>
+
+        <!--signle log file name-->
+        <Property name="logFileName">app.log</Property>
+
+        <!--log layout pattern-->
+        <Property name="layoutPattern">%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Property>
+
+        <!--appender log properties-->
+        <Property name="logging.level.default">debug</Property>
+    </Properties>
+
+    <!--custom appender configuration-->
+    <Appenders>
+
+        <!--confole appender-->
+        <Console name="APPENDER_CONSOLE" target="SYSTEM_OUT">
+            <PatternLayout pattern="${layoutPattern}"/>
+        </Console>
+
+        <!--single file appender-->
+        <File name="APPENDER_FILE" fileName="${logFileName}" bufferedIO="true">
+            <PatternLayout pattern="${layoutPattern}"/>
+        </File>
+
+        <!--rolling file appender-->
+        <RollingFile name="APPENDER_ROLLING" fileName="${baseLogPath}/${logFileName}.log"
+                     filePattern="${baseLogPath}/${logFileName}.%i">
+            <PatternLayout pattern="${layoutPattern}"/>
+            <Policies>
+                <!--size based rolling: max file size for each log file-->
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <!--max log file numbers in folder-->
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+
+        <!--daily file appender-->
+        <RollingFile name="APPENDER_DAILY_ROLLING" fileName="${baseLogPath}/${dailyLogFileName}.log"
+                     filePattern="${baseLogPath}/${dailyLogFileName}-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${layoutPattern}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="5"/>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+
+    </Appenders>
+
+
+    <!--custom logging configurations-->
+    <Loggers>
+        <!--root logger-->
+        <Root level="${logging.level.default}">
+            <AppenderRef ref="APPENDER_CONSOLE"/>
+        </Root>
+
+        <!--application logger-->
+        <!--## 应用全局配置-->
+        <Logger name="me.qtill" level="${logging.level.default}" additivity="false">
+            <AppenderRef ref="APPENDER_CONSOLE"/>
+            　　　　
+        </Logger>
+        <!--# 应用日志配置 end-->
+
+
+        <!--# zkclient-->
+        <Logger name="org.I0Itec.zkclient" level="${logging.level.default}" additivity="false">
+            <!--<AppenderRef ref="APPENDER_DAILY_ROLLING" />-->
+            <AppenderRef ref="APPENDER_CONSOLE"/>
+            　　　　
+        </Logger>
+        <!--# netty日志配置 end-->
+
+
+    </Loggers>
+</Configuration>

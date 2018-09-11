@@ -10,6 +10,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>qtill-logging</artifactId>
-
+    <packaging>pom</packaging>
+    <modules>
+        <module>log4j2-configuration</module>
+        <module>log4j-configuration</module>
+    </modules>
 
 </project>

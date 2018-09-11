@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO" monitorInterval="30">
+
+    <!-- custom configuration properties -->
+    <Properties>
+
+        <!--log file folder-->
+        <Property name="logging.baseLogPath">qtill-logging/log4j2-configuration/logs/</Property>
+
+        <!--log layout pattern-->
+        <Property name="logging.layoutPattern">%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Property>
+
+        <!--appender log properties-->
+        <Property name="logging.level.default">debug</Property>
+    </Properties>
+
+    <!--custom appender configuration-->
+    <Appenders>
+
+        <!--confole appender-->
+        <Console name="CONSOLE" target="SYSTEM_OUT">
+            <PatternLayout pattern="${logging.layoutPattern}"/>
+        </Console>
+
+        <!--single file appender-->
+        <File name="FILE" fileName="${logging.baseLogPath}/app.log">
+            <PatternLayout pattern="${logging.layoutPattern}"/>
+        </File>
+
+        <!--rolling file appender-->
+        <RollingFile name="ROLLING" fileName="${logging.baseLogPath}/rolling.log"
+                     filePattern="${logging.baseLogPath}/rolling.log.%i">
+            <PatternLayout pattern="${logging.layoutPattern}"/>
+            <Policies>
+                <!--size based rolling: max file size for each log file-->
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <!--max log file numbers in folder-->
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+
+        <!--daily file appender-->
+        <RollingFile name="DAILY_ROLLING" fileName="${logging.baseLogPath}/daily_rolling.log"
+                     filePattern="${logging.baseLogPath}/daily_rolling.log-%d{yyyy-MM-dd}-%i">
+            <PatternLayout pattern="${logging.ayoutPattern}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="5"/>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+
+    </Appenders>
+
+
+    <!--custom logging configurations-->
+    <Loggers>
+        <!--root logger-->
+        <Root level="${logging.level.default}">
+            <AppenderRef ref="CONSOLE"/>
+        </Root>
+
+        <!--main logger-->
+        <Logger name="me.qtill.logging.log4j2" level="debug" additivity="false">
+            <AppenderRef ref="CONSOLE"/>
+            <AppenderRef ref="FILE"/>
+            <AppenderRef ref="ROLLING"/>
+        </Logger>
+
+        <!--specific logger-->
+
+
+    </Loggers>
+</Configuration>

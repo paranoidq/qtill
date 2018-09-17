@@ -3,6 +3,7 @@ package me.qtill.zookeeper.practices.queue;
 import org.I0Itec.zkclient.ExceptionUtil;
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.exception.ZkNoNodeException;
+import org.apache.curator.framework.recipes.queue.DistributedPriorityQueue;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -57,7 +58,6 @@ public class DistributedSimpleQueue<T> {
                     return getNodeNumer(o1, NODE_NAME).compareTo(getNodeNumer(o2, NODE_NAME));
                 }
             });
-
 
             // 循环每个顺序节点名
             for (String nodeName : list) {

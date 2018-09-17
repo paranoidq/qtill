@@ -74,24 +74,5 @@
         </Logger>
         <!--# 应用日志配置 end-->
 
-
-        <!--# zkclient-->
-        <Logger name="org.I0Itec.zkclient" level="error" additivity="false">
-            <!--<AppenderRef ref="APPENDER_DAILY_ROLLING" />-->
-            <AppenderRef ref="APPENDER_CONSOLE"/>
-        </Logger>
-
-        <Logger name="org.apache.zookeeper" level="error" additivity="false">
-            <!--<AppenderRef ref="APPENDER_DAILY_ROLLING" />-->
-            <AppenderRef ref="APPENDER_CONSOLE"/>
-        </Logger>
-        <Logger name="org.apache.curator" level="error" additivity="false">
-            <!--<AppenderRef ref="APPENDER_DAILY_ROLLING" />-->
-            <AppenderRef ref="APPENDER_CONSOLE"/>
-        </Logger>
-
-        <!--# netty日志配置 end-->
-
-
     </Loggers>
 </Configuration>

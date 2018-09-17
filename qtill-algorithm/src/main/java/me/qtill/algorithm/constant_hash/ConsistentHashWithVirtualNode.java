@@ -35,6 +35,7 @@ public class ConsistentHashWithVirtualNode {
             for (int i = 0; i < 10; i++) {
                 // 需要一种vn -> rn的关联方式，这里采用的是字符串模式匹配的关联方式
                 String vn = str + "&&VN" + i;
+                // 也可以采用一个映射关系 vn -> rn，但这里反正也要对vn有一个命名方式，索性就将realNode名称放在其中了
                 int hash = getHash(vn);
                 ring.put(hash, vn);
             }

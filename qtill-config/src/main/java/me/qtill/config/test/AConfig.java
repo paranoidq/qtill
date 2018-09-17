@@ -8,11 +8,14 @@ import me.qtill.config.annotation.Key;
  * @author paranoidq
  * @since 1.0.0
  */
-@ConfigSource("classpath:folder/test-config.properties")
-public interface TestConfig {
+@ConfigSource("classpath:folder/a.properties")
+public interface AConfig {
 
-    @Key("name")
-    @Default("default")
-    public String name();
+    @Key("a")
+    public String a();
+
+
+    @Default("aa-value")
+    public String aa();
 
 }

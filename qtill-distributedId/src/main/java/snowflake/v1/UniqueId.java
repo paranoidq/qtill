@@ -1,4 +1,4 @@
-package me.qtill.snowflake.v1;
+package snowflake.v1;
 
 /**
  * +-----+----------------+---------------+-----------+------------- +

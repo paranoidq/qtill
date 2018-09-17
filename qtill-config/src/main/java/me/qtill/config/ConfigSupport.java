@@ -18,6 +18,10 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 配置管理工具类
@@ -107,6 +111,7 @@ public final class ConfigSupport {
             // xxxConfig通过动态代理的方式引用properties实例，刷新时，用新的properties直接替换
             // 不能通过创建新的xxxConfig代理实例来执行刷新操作，因为业务代码有可能将xxxConfig缓存为类变量或实例变量，而不是每次东从缓存中重新获取实例
             interceptorMap.get(clazz).refresh(properties);
+            logger.info("Config [{}] refreshed", clazz.getName());
         }
     }
 
@@ -119,6 +124,88 @@ public final class ConfigSupport {
             refresh(clazz);
         }
     }
+
+
+    private volatile boolean                             autoRefresh      = false;
+    private          ScheduledExecutorService            scheduler        = Executors.newSingleThreadScheduledExecutor();
+    private static   ConcurrentHashMap<Class<?>, Object> autoRefreshCache = new ConcurrentHashMap<>();
+
+    /**
+     * 开启自动刷新
+     *
+     * @param configClazz
+     * @param interval
+     * @param unit
+     * @param <T>
+     */
+    public <T> void enableAutoRefresh(Class<T> configClazz, long interval, TimeUnit unit) {
+        if (autoRefresh) {
+            logger.info("Auto refresh already enabled");
+            return;
+        }
+
+        // 添加到自动刷新列表
+        if (configClazz != null) {
+            logger.info("Auto refresh enabled for [{}]", configClazz.getName());
+            autoRefreshCache.put(configClazz, "");
+        } else {
+            logger.info("Auto refresh enabled for all configs");
+            Set<Class<?>> clazzes = configCache.keySet();
+            for (Class<?> clazz : clazzes) {
+                autoRefreshCache.put(clazz, "");
+            }
+        }
+
+        // 开启自动刷新，从autoRefreshCache中逐个进行刷新操作
+        scheduler.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                if (autoRefreshCache.size() > 0) {
+                    Set<Class<?>> autoRefreshConfigs = autoRefreshCache.keySet();
+                    for (Class<?> clazz : autoRefreshConfigs) {
+                        refresh(clazz);
+                    }
+                } else {
+                    logger.warn("Auto refresh is disabled for any config. Wait unil next interval");
+                }
+            }
+        }, interval, interval, unit);
+        autoRefresh = true;
+    }
+
+    /**
+     * 开启所有配置文件的自动刷新
+     *
+     * @param interval
+     * @param unit
+     */
+    public void enableAutoRefresh(long interval, TimeUnit unit) {
+        enableAutoRefresh(null, interval, unit);
+    }
+
+
+    /**
+     * 关闭所有配置文件的自动刷新
+     */
+    public void disableAutoRefresh() {
+        disableAutoRefresh(null);
+    }
+
+    /**
+     * 关闭指定配置类的自动刷新
+     *
+     * @param configClazz
+     */
+    public void disableAutoRefresh(Class<?> configClazz) {
+        if (configClazz == null) {
+            logger.info("Auto refresh disabled for all configs");
+            autoRefreshCache.clear();
+        } else {
+            autoRefreshCache.remove(configClazz);
+            logger.info("Auto refresh disabled for [{}]", configClazz.getName());
+        }
+    }
+
 
     /**
      * Config类代理类
@@ -154,7 +241,7 @@ public final class ConfigSupport {
             }
 
             if (propValueString == null) {
-                throw new IllegalStateException("Property[" + propKey + "] is neither given nor has a default value");
+                throw new IllegalStateException("Property [" + propKey + "] is neither given nor has a default value");
             }
 
             // 根据接口函数返回值，将属性值转换为指定类型

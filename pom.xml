@@ -39,8 +39,8 @@
         <module>qtill-ehcache</module>
         <module>qtill-algorithm</module>
         <module>qtill-akka</module>
-        <module>qtill-snowflake</module>
         <module>qtill-dstributedLock</module>
+        <module>qtill-distributedId</module>
     </modules>
 
 

@@ -2,10 +2,7 @@ package me.qtill.config.annotation;
 
 import me.qtill.config.ConfigSupport;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * 配置源注解
@@ -20,6 +17,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@Inherited
 public @interface ConfigSource {
 
     /**

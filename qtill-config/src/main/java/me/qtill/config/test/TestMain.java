@@ -30,7 +30,7 @@ public class TestMain {
             Bconfig bconfig = ConfigSupport.getInstance().get(Bconfig.class);
 
             {
-                ConfigSupport.getInstance().enableAutoRefresh(2, TimeUnit.SECONDS);
+                ConfigSupport.getInstance().enableAutoRefresh(AConfig.class, 2, TimeUnit.SECONDS);
             }
 
             @Override

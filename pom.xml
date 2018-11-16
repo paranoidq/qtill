@@ -41,6 +41,9 @@
         <module>qtill-akka</module>
         <module>qtill-dstributedLock</module>
         <module>qtill-distributedId</module>
+        <module>qtill-circuitbreaker</module>
+        <module>qtill-kafka</module>
+        <module>qtill-shell</module>
     </modules>
 
 

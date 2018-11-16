@@ -31,7 +31,11 @@ public class TestMain {
 
             {
                 ConfigSupport.getInstance().enableAutoRefresh(AConfig.class, 2, TimeUnit.SECONDS);
+
+                ConfigSupport.getInstance().disableAutoRefresh(Bconfig.class);
+                ConfigSupport.getInstance().enableAutoRefresh(Bconfig.class, 2, TimeUnit.SECONDS);
             }
+
 
             @Override
             public void run() {

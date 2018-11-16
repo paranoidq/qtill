@@ -1,8 +1,7 @@
-package me.qtill.commons.concurrent.tryit;
+package me.qtill.commons.concurrent.sample.future_promise;
 
 import com.google.common.base.Throwables;
 
-import java.sql.SQLOutput;
 import java.util.concurrent.Callable;
 
 /**

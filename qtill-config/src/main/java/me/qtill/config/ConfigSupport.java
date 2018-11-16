@@ -228,7 +228,7 @@ public final class ConfigSupport {
             ScheduledExecutorService scheduler = autoRefreshCache.remove(configClazz);
             if (!scheduler.isShutdown()) {
                 scheduler.shutdown();
-                logger.info("Auto refresh disabled for config [{}]", configClazz);
+                logger.info("Auto refresh disabled for config [{}]", configClazz.getName());
             }
         }
     }
@@ -250,7 +250,7 @@ public final class ConfigSupport {
             public void run() {
                 refresh(clazz);
             }
-        }, 0, timeunit, unit);
+        }, timeunit, timeunit, unit);
         return executorService;
     }
 

@@ -52,6 +52,15 @@
         <!--# 工具包依赖 end-->
 
 
+        <!-- # mysql驱动 start -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.11</version>
+        </dependency>
+        <!-- # mysql驱动 end -->
+
+
         <!--# 对象构造工具 start-->
         <dependency>
             <groupId>org.objenesis</groupId>

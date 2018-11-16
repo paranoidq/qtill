@@ -1,5 +1,6 @@
 package me.qtill.zookeeper.practices.lock;
 
+import com.google.common.util.concurrent.RateLimiter;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 

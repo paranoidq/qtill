@@ -1,4 +1,4 @@
-package me.qtill.commons.clazz;
+package me.qtill.commons.proxy;
 
 import com.google.common.base.Preconditions;
 import javassist.ClassPool;
@@ -51,7 +51,7 @@ public class ProxyUtil {
      * @param <T>
      * @return
      */
-    public static <T> T newJdkProxyInstance(Class<T> interfaceType, InvocationHandler invocationHandler) {
+    public static <T> T createJdkProxyDynamicProxy(Class<T> interfaceType, InvocationHandler invocationHandler) {
         Preconditions.checkNotNull(interfaceType);
         Preconditions.checkArgument(interfaceType.isInterface(), "%s is not an interface", interfaceType);
         Object object = Proxy.newProxyInstance(

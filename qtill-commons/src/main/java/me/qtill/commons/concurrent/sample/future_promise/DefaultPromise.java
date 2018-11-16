@@ -1,4 +1,4 @@
-package me.qtill.commons.concurrent.tryit;
+package me.qtill.commons.concurrent.sample.future_promise;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;

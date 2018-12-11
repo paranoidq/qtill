@@ -56,6 +56,16 @@ public class CodecUtil {
     }
 
     /**
+     * Base64编码，URLSafe
+     *
+     * @param data
+     * @return 返回string
+     */
+    public static String encodeBase64UrlSafeString(byte[] data) {
+        return Base64.encodeBase64URLSafeString(data);
+    }
+
+    /**
      * Base64编码, Chuncked
      *
      * @param data

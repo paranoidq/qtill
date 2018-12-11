@@ -5,7 +5,6 @@ import me.qtill.commons.serialization.jdk.JdkSerializer;
 import me.qtill.commons.serialization.kyro.KryoSerializer;
 import me.qtill.commons.serialization.protostuff.ProtostuffSerializer;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,14 +12,14 @@ import java.util.Map;
  * @author paranoidq
  * @since 1.0.0
  */
-public class SerializerUtil {
+public class SerializeUtil {
 
-    private static Map<SerializerType, Serializer> serializerMap = new HashMap<>();
+    private static Map<SerializeType, Serializer> serializerMap = new HashMap<>();
     static {
-        serializerMap.put(SerializerType.JDK, new JdkSerializer());
-        serializerMap.put(SerializerType.KRYO, new KryoSerializer());
-        serializerMap.put(SerializerType.HESSIAN, new HessianSerializer());
-        serializerMap.put(SerializerType.PROTOSTUFF, new ProtostuffSerializer());
+        serializerMap.put(SerializeType.JDK, new JdkSerializer());
+        serializerMap.put(SerializeType.KRYO, new KryoSerializer());
+        serializerMap.put(SerializeType.HESSIAN, new HessianSerializer());
+        serializerMap.put(SerializeType.PROTOSTUFF, new ProtostuffSerializer());
     }
 
     /**
@@ -28,7 +27,7 @@ public class SerializerUtil {
      * @param type
      * @return
      */
-    public static final Serializer getInstance(SerializerType type) {
+    public static final Serializer getInstance(SerializeType type) {
         return serializerMap.get(type);
     }
 

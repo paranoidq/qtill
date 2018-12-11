@@ -8,12 +8,12 @@ import java.io.IOException;
  * @author paranoidq
  * @since 1.0.0
  */
-public class SerializerUtilTest {
+public class SerializeUtilTest {
 
 
     @Test
     public void testJDK() throws IOException {
-        Serializer serializer = SerializerUtil.getInstance(SerializerType.JDK);
+        Serializer serializer = SerializeUtil.getInstance(SerializeType.JDK);
         byte[] bytes = serializer.serialize("aa");
         String origin = serializer.deserialize(bytes, String.class);
         assert origin.equals("aa");
@@ -21,7 +21,7 @@ public class SerializerUtilTest {
 
     @Test
     public void testHessian() throws IOException {
-        Serializer serializer = SerializerUtil.getInstance(SerializerType.HESSIAN);
+        Serializer serializer = SerializeUtil.getInstance(SerializeType.HESSIAN);
         byte[] bytes = serializer.serialize("aa");
         String origin = serializer.deserialize(bytes, String.class);
         assert origin.equals("aa");
@@ -29,7 +29,7 @@ public class SerializerUtilTest {
 
     @Test
     public void testKyro() throws IOException {
-        Serializer serializer = SerializerUtil.getInstance(SerializerType.KRYO);
+        Serializer serializer = SerializeUtil.getInstance(SerializeType.KRYO);
         byte[] bytes = serializer.serialize("aa");
         String origin = serializer.deserialize(bytes, String.class);
         assert origin.equals("aa");
@@ -37,7 +37,7 @@ public class SerializerUtilTest {
 
     @Test
     public void testProtostuff() throws IOException {
-        Serializer serializer = SerializerUtil.getInstance(SerializerType.PROTOSTUFF);
+        Serializer serializer = SerializeUtil.getInstance(SerializeType.PROTOSTUFF);
         byte[] bytes = serializer.serialize("aa");
         String origin = serializer.deserialize(bytes, String.class);
         assert origin.equals("aa");

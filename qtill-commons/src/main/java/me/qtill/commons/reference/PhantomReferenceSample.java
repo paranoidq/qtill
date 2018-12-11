@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
  * @author paranoidq
  * @since 1.0.0
  */
-public class PhantomReferenceDemo {
+public class PhantomReferenceSample {
 
     public static void test1() throws InterruptedException {
 

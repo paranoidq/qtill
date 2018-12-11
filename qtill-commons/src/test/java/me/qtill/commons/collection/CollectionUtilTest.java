@@ -2,9 +2,12 @@ package me.qtill.commons.collection;
 
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author paranoidq
@@ -18,11 +21,5 @@ public class CollectionUtilTest {
         Set<String> set = new HashSet<>();
         assertTrue(CollectionUtil.isEmpty(list));
         assertTrue(CollectionUtil.isEmpty(set));
-    }
-
-    @Test
-    public void testMap() {
-        Map<String, String> map = new HashMap<>();
-        assertTrue(CollectionUtil.isEmpty(map));
     }
 }

@@ -20,6 +20,7 @@
         <commons-io.version>2.5</commons-io.version>
         <commons-collection.version>3.2.2</commons-collection.version>
         <guava.version>23.6-jre</guava.version>
+        <jackson.version>2.9.5</jackson.version>
 
 
         <!--日志依赖-->
@@ -206,6 +207,22 @@
         </dependency>
         <!--# 反射依赖 end -->
 
+
+
+        <!--# json start-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.101tec</groupId>
+            <artifactId>zkclient</artifactId>
+            <version>0.4</version>
+            <scope>compile</scope>
+        </dependency>
+        <!--# json end-->
 
     </dependencies>
 </project>

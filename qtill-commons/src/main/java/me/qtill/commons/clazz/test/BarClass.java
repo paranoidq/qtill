@@ -7,6 +7,9 @@ package me.qtill.commons.clazz.test;
 public class BarClass {
 
     public static String test;
+    static {
+        System.out.println("initialize BarClass");
+    }
 
     public String m() {
         return "bar";

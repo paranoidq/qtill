@@ -44,6 +44,8 @@
         <module>qtill-circuitbreaker</module>
         <module>qtill-kafka</module>
         <module>qtill-shell</module>
+        <module>qtill-hystrix</module>
+        <module>qtill-quasar</module>
     </modules>
 
 

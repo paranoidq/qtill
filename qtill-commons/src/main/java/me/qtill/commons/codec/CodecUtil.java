@@ -1,26 +1,20 @@
 package me.qtill.commons.codec;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.lang.CharUtils;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 
 /**
  * 编解码工具类
- *      - base64编解码
- *      - urlencode编解码
- *      - byte数组-16进制编解码
+ * - base64编解码
+ * - urlencode编解码
+ * - byte数组-16进制编解码
  *
  * @author paranoidq
  * @since 1.0.0
@@ -33,6 +27,7 @@ public class CodecUtil {
 
     /**
      * BASE64编码
+     *
      * @param data
      * @return
      */
@@ -42,6 +37,7 @@ public class CodecUtil {
 
     /**
      * BASE64解码
+     *
      * @param data
      * @return
      */
@@ -51,6 +47,7 @@ public class CodecUtil {
 
     /**
      * BASE64编码, URLSafe
+     *
      * @param data
      * @return
      */
@@ -60,6 +57,7 @@ public class CodecUtil {
 
     /**
      * Base64编码, Chuncked
+     *
      * @param data
      * @return
      */
@@ -69,6 +67,7 @@ public class CodecUtil {
 
     /**
      * byte数组转16进制字符串
+     *
      * @param data
      * @return
      */
@@ -78,6 +77,7 @@ public class CodecUtil {
 
     /**
      * byte数组转16进制字符串, 包含分隔符
+     *
      * @param data
      * @param sp
      * @return
@@ -93,6 +93,7 @@ public class CodecUtil {
 
     /**
      * 16进制字符串转byte数组
+     *
      * @param data
      * @return
      * @throws DecoderException
@@ -104,6 +105,7 @@ public class CodecUtil {
 
     /**
      * 16进制字符串转byte数组, 包含分隔符
+     *
      * @param data
      * @param sp
      * @return
@@ -118,6 +120,7 @@ public class CodecUtil {
 
     /**
      * URLEncode
+     *
      * @param data
      * @param encoding
      * @return
@@ -129,6 +132,7 @@ public class CodecUtil {
 
     /**
      * URLDecode
+     *
      * @param data
      * @param encoding
      * @return

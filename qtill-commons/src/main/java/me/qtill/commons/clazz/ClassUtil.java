@@ -3,6 +3,7 @@ package me.qtill.commons.clazz;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import com.google.common.reflect.ClassPath;
+import com.google.common.util.concurrent.RateLimiter;
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import io.github.lukehutch.fastclasspathscanner.matchprocessor.ClassAnnotationMatchProcessor;
 import io.github.lukehutch.fastclasspathscanner.matchprocessor.ClassMatchProcessor;
@@ -21,7 +22,6 @@ import java.util.Set;
  * @since 1.0.0
  */
 public final class ClassUtil {
-
 
     /**
      * 获取package下的所有的class
